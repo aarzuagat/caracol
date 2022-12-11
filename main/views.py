@@ -34,7 +34,7 @@ def search():
     options = Options()
     options.binary_location = '/usr/local/bin'
     firefox_binary = FirefoxBinary('/usr/bin/firefox/')
-    driver = webdriver.Firefox(firefox_binary=firefox_binary)
+    driver = webdriver.Firefox(firefox_binary=firefox_binary, log_path='/var/www/caracol/geckodriver.log')
     driver.get(path)
     data = '{"municipality": "null", "province": {"id": 3, "name": "La Habana"}, "business": "null"}'
     driver.execute_script(f"localStorage.setItem('location',{json.dumps(data)})")
