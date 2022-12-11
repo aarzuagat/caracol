@@ -10,7 +10,7 @@ from django.http import HttpResponse
 from selenium import webdriver
 from selenium.webdriver import Keys
 from selenium.webdriver.common.by import By
-
+from selenium.webdriver.firefox.options import Options
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'caracol.settings')
 
 django.setup()
@@ -29,7 +29,9 @@ def search():
         "User-Agent": "Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) "
                       "Chrome/72.0.3626.119 Safari/537.36 "
     }
-    driver = webdriver.Firefox()
+    options = Options()
+    options.binary_location = '/usr/local/bin'
+    driver = webdriver.Firefox(executable_path=r'/usr/local/bin/geckodriver', options=options)
     driver.get(path)
     data = '{"municipality": "null", "province": {"id": 3, "name": "La Habana"}, "business": "null"}'
     driver.execute_script(f"localStorage.setItem('location',{json.dumps(data)})")
