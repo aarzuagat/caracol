@@ -1,6 +1,7 @@
 import json
 import os
 import time
+from datetime import datetime, timedelta
 
 import django
 import requests
@@ -56,7 +57,7 @@ def search():
         except:
             pass
         else:
-            obj = models.Producto.objects.get_or_create(name=name)
+            obj = models.Producto.objects.get_or_create(name=name, updated_at=datetime.now())
 
     return True
 
@@ -70,7 +71,8 @@ def sendTelegram(message):
 
 
 def sender(request):
-    non_sended = models.Producto.objects.filter(sended=False)
+    five_minutes = timedelta(minutes=5)
+    non_sended = models.Producto.objects.filter(sended=False, updated_at__lt=five_minutes)
     for prod in non_sended:
         sendTelegram(prod.name)
         prod.sended = True
