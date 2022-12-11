@@ -62,6 +62,7 @@ def search():
         producto = x.find(attrs={'class': 'card-product'}).find(attrs={'class': 'title'})
         try:
             name = producto.text
+            sendTelegram(name)
         except:
             pass
         else:
