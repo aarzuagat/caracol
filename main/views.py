@@ -10,6 +10,7 @@ from django.http import HttpResponse
 from selenium import webdriver
 from selenium.webdriver import Keys
 from selenium.webdriver.common.by import By
+from selenium.webdriver.firefox.firefox_binary import FirefoxBinary
 from selenium.webdriver.firefox.options import Options
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'caracol.settings')
 
