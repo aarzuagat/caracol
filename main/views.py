@@ -77,7 +77,7 @@ def sendTelegram(message):
 
 def sender(request):
     five_minutes = timedelta(minutes=5)
-    non_sended = models.Producto.objects.filter(sended=False, updated_at__lt=five_minutes).get()
+    non_sended = models.Producto.objects.filter(sended=False, updated_at__lt=five_minutes)
     for prod in non_sended:
         sendTelegram(prod.name)
         prod.sended = True
