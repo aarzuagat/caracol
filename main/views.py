@@ -31,7 +31,8 @@ def search():
     }
     options = Options()
     options.binary_location = '/usr/local/bin'
-    driver = webdriver.Firefox()
+    firefox_binary = FirefoxBinary('/usr/bin/firefox/')
+    driver = webdriver.Firefox(firefox_binary=firefox_binary)
     driver.get(path)
     data = '{"municipality": "null", "province": {"id": 3, "name": "La Habana"}, "business": "null"}'
     driver.execute_script(f"localStorage.setItem('location',{json.dumps(data)})")
