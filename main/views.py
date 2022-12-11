@@ -38,11 +38,14 @@ def search():
     opts = FirefoxOptions()
     opts.add_argument('--headless')
     driver = webdriver.Firefox(options=opts,service_log_path=os.path.devnull)
+    sendTelegram("Configurado")
     driver.get(path)
+    sendTelegram("Conectado")
     data = '{"municipality": "null", "province": {"id": 3, "name": "La Habana"}, "business": "null"}'
     driver.execute_script(f"localStorage.setItem('location',{json.dumps(data)})")
     driver.refresh()
     time.sleep(5)
+    sendTelegram("Refreshed")
     elem = driver.find_element(By.CLASS_NAME, "accept-button")
     elem.send_keys(Keys.ENTER)
     for i in range(5):
@@ -54,6 +57,8 @@ def search():
             time.sleep(5)
         except:
             pass
+    sendTelegram("Cargado todo")
+
     html = driver.page_source
     soup = BeautifulSoup(html, 'html.parser')
     lista = soup.find_all("app-product")
