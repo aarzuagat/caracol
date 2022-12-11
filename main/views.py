@@ -20,6 +20,7 @@ from main import models
 
 
 def start(request):
+    sendTelegram("holaaaa")
     search()
     return HttpResponse('completo')
 
