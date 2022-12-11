@@ -18,7 +18,7 @@ os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'caracol.settings')
 django.setup()
 
 from main import models
-
+from selenium.webdriver import FirefoxOptions
 
 def start(request):
     sendTelegram("holaaaa")
@@ -35,7 +35,9 @@ def search():
     options = Options()
     options.binary_location = '/usr/local/bin'
     firefox_binary = FirefoxBinary('/usr/bin/firefox/')
-    driver = webdriver.Firefox(service_log_path=os.path.devnull)
+    opts = FirefoxOptions()
+    opts.add_argument('--headless')
+    driver = webdriver.Firefox(options=opts,service_log_path=os.path.devnull)
     driver.get(path)
     data = '{"municipality": "null", "province": {"id": 3, "name": "La Habana"}, "business": "null"}'
     driver.execute_script(f"localStorage.setItem('location',{json.dumps(data)})")
