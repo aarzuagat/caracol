@@ -37,7 +37,7 @@ def search():
     firefox_binary = FirefoxBinary('/usr/bin/firefox')
     opts = FirefoxOptions()
     opts.add_argument('--headless')
-    driver = webdriver.Firefox(options=opts,firefox_binary=firefox_binary,service_log_path=os.path.devnull)
+    driver = webdriver.Firefox(options=opts,service_log_path=os.path.devnull)
     sendTelegram("Configurado")
     driver.get(path)
     sendTelegram("Conectado")
