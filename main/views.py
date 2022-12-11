@@ -33,11 +33,11 @@ def search():
                       "Chrome/72.0.3626.119 Safari/537.36 "
     }
     options = Options()
-    options.binary_location = '/usr/bin'
+    # options.binary_location = '/usr/bin/fire'
     firefox_binary = FirefoxBinary('/usr/bin/firefox/')
     opts = FirefoxOptions()
     opts.add_argument('--headless')
-    driver = webdriver.Firefox(options=opts,service_log_path=os.path.devnull)
+    driver = webdriver.Firefox(options=opts,firefox_binary=firefox_binary,service_log_path=os.path.devnull)
     sendTelegram("Configurado")
     driver.get(path)
     sendTelegram("Conectado")
