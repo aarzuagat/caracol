@@ -12,6 +12,7 @@ from selenium.webdriver import Keys
 from selenium.webdriver.common.by import By
 from selenium.webdriver.firefox.firefox_binary import FirefoxBinary
 from selenium.webdriver.firefox.options import Options
+
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'caracol.settings')
 
 django.setup()
@@ -34,7 +35,7 @@ def search():
     options = Options()
     options.binary_location = '/usr/local/bin'
     firefox_binary = FirefoxBinary('/usr/bin/firefox/')
-    driver = webdriver.Firefox(firefox_binary=firefox_binary,log_path='/var/www/caracol/geckodriver.log')
+    driver = webdriver.Firefox(firefox_binary=firefox_binary, service_log_path=os.path.devnull)
     driver.get(path)
     data = '{"municipality": "null", "province": {"id": 3, "name": "La Habana"}, "business": "null"}'
     driver.execute_script(f"localStorage.setItem('location',{json.dumps(data)})")
