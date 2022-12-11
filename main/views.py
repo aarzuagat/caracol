@@ -33,7 +33,7 @@ def search():
                       "Chrome/72.0.3626.119 Safari/537.36 "
     }
     options = Options()
-    options.binary_location = '/usr/local/bin'
+    options.binary_location = '/usr/bin'
     firefox_binary = FirefoxBinary('/usr/bin/firefox/')
     opts = FirefoxOptions()
     opts.add_argument('--headless')
