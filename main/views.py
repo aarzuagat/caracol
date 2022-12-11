@@ -5,6 +5,7 @@ import time
 import django
 import requests
 from bs4 import BeautifulSoup
+from django.http import HttpResponse
 from selenium import webdriver
 from selenium.webdriver import Keys
 from selenium.webdriver.common.by import By
@@ -18,7 +19,7 @@ from main import models
 
 def start(request):
     search()
-    return 'a'
+    return HttpResponse('completo')
 
 
 def search():
