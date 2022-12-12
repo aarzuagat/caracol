@@ -7,6 +7,7 @@ import django
 import requests
 from bs4 import BeautifulSoup
 from django.http import HttpResponse
+from django.utils import timezone
 from selenium import webdriver
 from selenium.webdriver import Keys
 from selenium.webdriver.common.by import By
@@ -20,9 +21,11 @@ django.setup()
 from main import models
 from selenium.webdriver import FirefoxOptions
 
+
 def start(request):
-    sendTelegram("holaaaa")
-    search()
+    for i in range(50):
+        search()
+        time.sleep(10 * 60)
     return HttpResponse('completo')
 
 
@@ -34,21 +37,22 @@ def search():
     }
     options = Options()
     # options.binary_location = '/usr/bin/fire'
-    firefox_binary = FirefoxBinary('/usr/bin/firefox-esr')
-    opts = FirefoxOptions()
-    opts.add_argument('--headless')
-    driver = webdriver.Firefox(options=opts,firefox_binary=firefox_binary,service_log_path=os.path.devnull)
-    sendTelegram("Configurado")
+    # firefox_binary = FirefoxBinary('/usr/bin/firefox-esr')
+    # opts = FirefoxOptions()
+    # opts.add_argument('--headless')
+    driver = webdriver.Firefox()
     driver.get(path)
-    sendTelegram("Conectado")
     data = '{"municipality": "null", "province": {"id": 3, "name": "La Habana"}, "business": "null"}'
     driver.execute_script(f"localStorage.setItem('location',{json.dumps(data)})")
     driver.refresh()
     time.sleep(5)
-    sendTelegram("Refreshed")
-    elem = driver.find_element(By.CLASS_NAME, "accept-button")
-    elem.send_keys(Keys.ENTER)
-    for i in range(5):
+
+    try:
+        elem = driver.find_element(By.XPATH, "/html/body/div[2]/div[2]/footer/button[3]")
+        elem.send_keys(Keys.ENTER)
+    except:
+        pass
+    for i in range(2):
         try:
             elem = driver.find_element(By.XPATH, "/html/body/app-root/div/app-main/mat-sidenav-container/mat-sidenav"
                                                  "-content/app-product-left-sidebar/div/div[2]/div[2]/div[2]/div["
@@ -57,7 +61,6 @@ def search():
             time.sleep(5)
         except:
             pass
-    sendTelegram("Cargado todo")
 
     html = driver.page_source
     soup = BeautifulSoup(html, 'html.parser')
@@ -67,11 +70,16 @@ def search():
         producto = x.find(attrs={'class': 'card-product'}).find(attrs={'class': 'title'})
         try:
             name = producto.text
-            sendTelegram(name)
         except:
             pass
         else:
-            obj = models.Producto.objects.get_or_create(name=name, updated_at=datetime.now())
+            obj, created = models.Producto.objects.get_or_create(name=name)
+            if not created:
+                obj.updated_at = timezone.now()
+                obj.save()
+
+    sender()
+    driver.close()
 
     return True
 
@@ -84,11 +92,14 @@ def sendTelegram(message):
     print(response)
 
 
-def sender(request):
-    five_minutes = timedelta(minutes=5)
-    non_sended = models.Producto.objects.filter(sended=False, updated_at__lt=five_minutes)
+def sender():
+    five_minutes = timezone.now() - timezone.timedelta(minutes=15)
+    non_sended = models.Producto.objects.filter(updated_at__isnull=True)
+    print(f'hay {len(non_sended)} productos')
     for prod in non_sended:
         sendTelegram(prod.name)
         prod.sended = True
+        prod.updated_at = timezone.now()
         prod.save()
         time.sleep(1)
+    models.Producto.objects.filter(updated_at__lt=five_minutes).delete()
