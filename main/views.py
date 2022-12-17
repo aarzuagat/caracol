@@ -40,7 +40,13 @@ def search():
     # firefox_binary = FirefoxBinary('/usr/bin/firefox-esr')
     # opts = FirefoxOptions()
     # opts.add_argument('--headless')
-    driver = webdriver.Chrome()
+    driver_location = '/usr/bin/chromedriver'
+    binary_location = '/usr/bin/google-chrome'
+
+    options = webdriver.ChromeOptions()
+    options.binary_location = binary_location
+
+    driver = webdriver.Chrome(executable_path=driver_location, options=options)
     driver.get(path)
     data = '{"municipality": "null", "province": {"id": 3, "name": "La Habana"}, "business": "null"}'
     driver.execute_script(f"localStorage.setItem('location',{json.dumps(data)})")
