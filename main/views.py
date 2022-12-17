@@ -23,9 +23,9 @@ from selenium.webdriver import FirefoxOptions
 
 
 def start(request):
-    for i in range(50):
-        search()
-        time.sleep(10 * 60)
+    search()
+    searchMarina()
+    sender()
     return HttpResponse('completo')
 
 
@@ -65,20 +65,66 @@ def search():
     html = driver.page_source
     soup = BeautifulSoup(html, 'html.parser')
     lista = soup.find_all("app-product")
-    print(len(lista))
     for x in lista:
         producto = x.find(attrs={'class': 'card-product'}).find(attrs={'class': 'title'})
+        precio = x.find(attrs={'class': 'price-offer'}).text
+        tienda = 'caracol'
         try:
             name = producto.text
         except:
             pass
         else:
-            obj, created = models.Producto.objects.get_or_create(name=name)
+            obj, created = models.Producto.objects.get_or_create(name=name, precio=precio, tienda=tienda)
             if not created:
                 obj.updated_at = timezone.now()
                 obj.save()
 
-    sender()
+    driver.close()
+
+    return True
+
+
+def searchMarina():
+    path = 'https://tienda.marinasmarlin.com/products/search'
+    driver = webdriver.Firefox()
+    driver.get(path)
+    data = '{"municipality": "null", "province": {"id": 3, "name": "La Habana"}, "business": "null"}'
+    driver.execute_script(f"localStorage.setItem('location',{json.dumps(data)})")
+    driver.refresh()
+    time.sleep(5)
+
+    try:
+        elem = driver.find_element(By.XPATH, "/html/body/div[2]/div[2]/footer/button[3]")
+        elem.send_keys(Keys.ENTER)
+    except:
+        pass
+    for i in range(2):
+        try:
+            elem = driver.find_element(By.XPATH, "/html/body/app-root/div/app-main/mat-sidenav-container/mat-sidenav"
+                                                 "-content/app-product-left-sidebar/div/div[2]/div[2]/div[2]/div["
+                                                 "2]/button")
+            elem.send_keys(Keys.ENTER)
+            time.sleep(5)
+        except:
+            pass
+
+    html = driver.page_source
+    soup = BeautifulSoup(html, 'html.parser')
+    lista = soup.find_all("app-product")
+    for x in lista:
+        producto = x.find(attrs={'class': 'card-product'}).find(attrs={'class': 'title'})
+        precio = x.find(attrs={'class': 'price-offer'}).text
+        tienda = 'Marina'
+        try:
+            name = producto.text
+        except:
+            pass
+        else:
+            obj, created = models.Producto.objects.get_or_create(name=name, precio=precio, tienda=tienda)
+            if not created:
+                obj.updated_at = timezone.now()
+                obj.save()
+
     driver.close()
 
     return True
@@ -97,7 +143,7 @@ def sender():
     non_sended = models.Producto.objects.filter(updated_at__isnull=True)
     print(f'hay {len(non_sended)} productos')
     for prod in non_sended:
-        sendTelegram(prod.name)
+        sendTelegram(f'{prod.tienda}: {prod.precio} - {prod.name}')
         prod.sended = True
         prod.updated_at = timezone.now()
         prod.save()
