@@ -48,7 +48,7 @@ def search():
     options.add_argument('--no-sandbox')
     options.add_argument('--headless')
 
-    driver = webdriver.Chrome(executable_path=driver_location, options=options)
+    driver = webdriver.Chrome(executable_path=driver_location, options=options, service_log_path='/var/www/geckodriver.log')
     driver.get(path)
     data = '{"municipality": "null", "province": {"id": 3, "name": "La Habana"}, "business": "null"}'
     driver.execute_script(f"localStorage.setItem('location',{json.dumps(data)})")
