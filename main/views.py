@@ -45,6 +45,8 @@ def search():
 
     options = webdriver.ChromeOptions()
     options.binary_location = binary_location
+    options.add_argument('--no-sandbox')
+    options.add_argument('--headless')
 
     driver = webdriver.Chrome(executable_path=driver_location, options=options)
     driver.get(path)
