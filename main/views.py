@@ -26,6 +26,7 @@ def start(request):
     search()
     searchMarina()
     sender()
+    sendTelegram("comenzando")
     return HttpResponse('completo')
 
 
