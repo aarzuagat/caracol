@@ -24,7 +24,10 @@ from selenium.webdriver import FirefoxOptions
 
 def start(request):
     search()
-    searchMarina()
+    try:
+        searchMarina()
+    except:
+        pass
     sender()
     sendTelegram("comenzando")
     return HttpResponse('completo')
