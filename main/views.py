@@ -29,7 +29,6 @@ def start(request):
     except:
         pass
     sender()
-    sendTelegram("comenzando")
     return HttpResponse('completo')
 
 
@@ -147,17 +146,30 @@ def sendTelegram(message):
     chat = "-859697075"
     url = f'https://api.telegram.org/bot{bot_key}/sendMessage?chat_id={chat}&text={message}&parse_mode=markdown'
     response = requests.get(url)
-    print(response)
+    print(response.text)
+    return response.status_code
+
 
 
 def sender():
     five_minutes = timezone.now() - timezone.timedelta(minutes=15)
     non_sended = models.Producto.objects.filter(updated_at__isnull=True)
+    non_sended2 = models.Producto.objects.filter(last_send__lt=five_minutes)
     print(f'hay {len(non_sended)} productos')
     for prod in non_sended:
-        sendTelegram(f'{prod.tienda}: {prod.precio} - {prod.name}')
-        prod.sended = True
-        prod.updated_at = timezone.now()
-        prod.save()
+        status = sendTelegram(f'{prod.tienda}: {prod.precio} - {prod.name}')
+        if status < 400:
+            prod.sended = True
+            prod.updated_at = timezone.now()
+            prod.last_send = timezone.now()
+            prod.save()
+        time.sleep(1)
+    for prod in non_sended2:
+        status = sendTelegram(f'{prod.tienda}: {prod.precio} - {prod.name}')
+        if status < 400:
+            prod.sended = True
+            prod.updated_at = timezone.now()
+            prod.last_send = timezone.now()
+            prod.save()
         time.sleep(1)
     models.Producto.objects.filter(updated_at__lt=five_minutes).delete()
