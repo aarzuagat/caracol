@@ -22,7 +22,7 @@ from main import models
 
 
 def start(request):
-    if datetime.datetime.min is 0:
+    if datetime.datetime.min is 7:
         sendTelegram("El bot está trabajando normalmente")
     search()
     try:
