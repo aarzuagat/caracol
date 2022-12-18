@@ -6,6 +6,7 @@ from datetime import datetime, timedelta
 import django
 import requests
 from bs4 import BeautifulSoup
+from django.db.models import Q
 from django.http import HttpResponse
 from django.utils import timezone
 from selenium import webdriver
@@ -150,26 +151,19 @@ def sendTelegram(message):
     return response.status_code
 
 
-
 def sender():
     five_minutes = timezone.now() - timezone.timedelta(minutes=15)
-    non_sended = models.Producto.objects.filter(updated_at__isnull=True)
-    non_sended2 = models.Producto.objects.filter(last_send__lt=five_minutes)
+    non_sended = models.Producto.objects.filter(
+        Q(updated_at__isnull=True) | Q(last_send__isnull=True) | Q(last_send__lt=five_minutes))
     print(f'hay {len(non_sended)} productos')
     for prod in non_sended:
         status = sendTelegram(f'{prod.tienda}: {prod.precio} - {prod.name}')
+        print(f"el status es {status}")
         if status < 400:
             prod.sended = True
             prod.updated_at = timezone.now()
             prod.last_send = timezone.now()
             prod.save()
         time.sleep(1)
-    for prod in non_sended2:
-        status = sendTelegram(f'{prod.tienda}: {prod.precio} - {prod.name}')
-        if status < 400:
-            prod.sended = True
-            prod.updated_at = timezone.now()
-            prod.last_send = timezone.now()
-            prod.save()
-        time.sleep(1)
+
     models.Producto.objects.filter(updated_at__lt=five_minutes).delete()
