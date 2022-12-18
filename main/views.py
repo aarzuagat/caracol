@@ -1,3 +1,4 @@
+import datetime
 import json
 import os
 import time
@@ -21,7 +22,7 @@ from main import models
 
 
 def start(request):
-    if timezone.now().min is 0:
+    if datetime.datetime.min is 0:
         sendTelegram("El bot está trabajando normalmente")
     search()
     try:
