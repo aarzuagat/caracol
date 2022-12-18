@@ -1,7 +1,6 @@
 import json
 import os
 import time
-from datetime import datetime, timedelta
 
 import django
 import requests
@@ -12,7 +11,6 @@ from django.utils import timezone
 from selenium import webdriver
 from selenium.webdriver import Keys
 from selenium.webdriver.common.by import By
-from selenium.webdriver.firefox.firefox_binary import FirefoxBinary
 from selenium.webdriver.firefox.options import Options
 
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'caracol.settings')
@@ -20,7 +18,6 @@ os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'caracol.settings')
 django.setup()
 
 from main import models
-from selenium.webdriver import FirefoxOptions
 
 
 def start(request):
@@ -157,9 +154,9 @@ def sendTelegram(message):
 
 
 def sender():
-    five_minutes = timezone.now() - timezone.timedelta(minutes=15)
+    five_minutes = timezone.now() - timezone.timedelta(minutes=10)
     non_sended = models.Producto.objects.filter(
-        Q(updated_at__isnull=True) | Q(last_send__isnull=True) | Q(last_send__lt=five_minutes))
+        Q(updated_at__isnull=True) | Q(last_send__isnull=True))
     print(f'hay {len(non_sended)} productos')
     for prod in non_sended:
         status = sendTelegram(f'*{prod.tienda}*: {prod.precio} - {prod.name}')
