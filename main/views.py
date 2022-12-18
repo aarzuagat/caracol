@@ -160,7 +160,7 @@ def sender():
         Q(updated_at__isnull=True) | Q(last_send__isnull=True) | Q(last_send__lt=five_minutes))
     print(f'hay {len(non_sended)} productos')
     for prod in non_sended:
-        status = sendTelegram(f'{prod.tienda}: {prod.precio} - {prod.name}')
+        status = sendTelegram(f'*{prod.tienda}*: {prod.precio} - {prod.name}')
         print(f"el status es {status}")
         if status < 400:
             prod.sended = True
