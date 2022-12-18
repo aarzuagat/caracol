@@ -24,6 +24,8 @@ from selenium.webdriver import FirefoxOptions
 
 
 def start(request):
+    if timezone.now().min is 0:
+        sendTelegram("El bot está trabajando normalmente")
     search()
     try:
         searchMarina()
