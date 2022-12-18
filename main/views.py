@@ -145,6 +145,9 @@ def searchMarina():
 def sendTelegram(message):
     bot_key = "5826956567:AAH4wO2YWbvg3pbZVQ2PHvksBc38fj81B7E"
     chat = "-1001802874612"
+    for char in ['_', '&']:
+        if char in message:
+            message = message.replace(char, '')
     url = f'https://api.telegram.org/bot{bot_key}/sendMessage?chat_id={chat}&text={message}&parse_mode=markdown'
     response = requests.get(url)
     print(response.text)
