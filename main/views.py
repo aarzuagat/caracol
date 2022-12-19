@@ -155,7 +155,7 @@ def sendTelegram(message):
 
 
 def sender():
-    five_minutes = timezone.now() - timezone.timedelta(minutes=10)
+    five_minutes = timezone.now() - timezone.timedelta(minutes=6)
     non_sended = models.Producto.objects.filter(
         Q(updated_at__isnull=True) | Q(last_send__isnull=True))
     print(f'hay {len(non_sended)} productos')
