@@ -31,7 +31,7 @@ def start(request):
     except:
         pass
     sender()
-    return HttpResponse('completo')
+    return HttpResponse(f'hay {models.Producto.objects.count()} productos')
 
 
 def search():
