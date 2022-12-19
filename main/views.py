@@ -33,6 +33,7 @@ def start(request):
     sender()
     if now.hour % 4 is 0 and now.minute in range(15, 19):
         sendTelegram("Recapitulando todos los productos existentes")
+        time.sleep(2)
         models.Producto.objects.update(last_send=None)
         sender()
     return HttpResponse(f'hay {models.Producto.objects.count()} productos')
