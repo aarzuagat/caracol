@@ -22,7 +22,7 @@ from main import models
 
 
 def start(request):
-    if datetime.datetime.min is 7:
+    if datetime.datetime.now().min is 7:
         sendTelegram("El bot está trabajando normalmente")
     search()
     try:
@@ -64,7 +64,7 @@ def search():
         elem.send_keys(Keys.ENTER)
     except:
         pass
-    for i in range(2):
+    for i in range(5):
         try:
             elem = driver.find_element(By.XPATH, "/html/body/app-root/div/app-main/mat-sidenav-container/mat-sidenav"
                                                  "-content/app-product-left-sidebar/div/div[2]/div[2]/div[2]/div["
