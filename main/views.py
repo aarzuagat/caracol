@@ -23,7 +23,7 @@ from main import models
 
 def start(request):
     now = datetime.datetime.now()
-    if now.minute in range(21, 26) and now.hour % 3 is 0 and now.hour % 3 in range(8,20):
+    if now.minute in range(21, 26) and now.hour % 3 is 0 and now.hour % 3 in range(8, 20):
         sendTelegram("El bot está trabajando normalmente")
     search()
     try:
@@ -65,7 +65,7 @@ def search():
         elem.send_keys(Keys.ENTER)
     except:
         pass
-    for i in range(5):
+    for i in range(10):
         try:
             elem = driver.find_element(By.XPATH, "/html/body/app-root/div/app-main/mat-sidenav-container/mat-sidenav"
                                                  "-content/app-product-left-sidebar/div/div[2]/div[2]/div[2]/div["
