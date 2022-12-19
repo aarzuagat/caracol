@@ -23,7 +23,7 @@ from main import models
 
 def start(request):
     now = datetime.datetime.now()
-    if now.minute is 21:
+    if now.minute in range(21,26):
         sendTelegram("El bot está trabajando normalmente")
     search()
     try:
