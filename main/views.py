@@ -45,11 +45,6 @@ def search():
         "User-Agent": "Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) "
                       "Chrome/72.0.3626.119 Safari/537.36 "
     }
-    options = Options()
-    # options.binary_location = '/usr/bin/fire'
-    # firefox_binary = FirefoxBinary('/usr/bin/firefox-esr')
-    # opts = FirefoxOptions()
-    # opts.add_argument('--headless')
     driver_location = '/usr/bin/chromedriver'
     binary_location = '/usr/bin/google-chrome'
 
@@ -104,7 +99,14 @@ def search():
 
 def searchMarina():
     path = 'https://tienda.marinasmarlin.com/products/search'
-    driver = webdriver.Firefox()
+    driver_location = '/usr/bin/chromedriver'
+    binary_location = '/usr/bin/google-chrome'
+    options = webdriver.ChromeOptions()
+    options.binary_location = binary_location
+    options.add_argument('--no-sandbox')
+    options.add_argument('--headless')
+
+    driver = webdriver.Chrome(executable_path=driver_location, options=options)
     driver.get(path)
     data = '{"municipality": "null", "province": {"id": 3, "name": "La Habana"}, "business": "null"}'
     driver.execute_script(f"localStorage.setItem('location',{json.dumps(data)})")
