@@ -23,7 +23,7 @@ from main import models
 
 def start(request):
     now = datetime.datetime.now()
-    if now.minute in range(21, 26) and now.hour % 3 is 0 and now.hour % 3 in range(8, 20):
+    if now.minute in range(21, 26) and now.hour % 3 == 0 and now.hour % 3 in range(8, 20):
         sendTelegram("El bot está trabajando normalmente")
     search()
     try:
@@ -31,7 +31,7 @@ def start(request):
     except:
         pass
     sender()
-    if now.hour % 4 is 0 and now.minute in range(15, 19):
+    if now.hour % 4 == 0 and now.minute in range(15, 19):
         sendTelegram("Recapitulando todos los productos existentes")
         time.sleep(2)
         models.Producto.objects.update(last_send=None)
