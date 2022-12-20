@@ -22,6 +22,7 @@ from main import models
 
 
 def start(request):
+    sendTelegram("Mensaje de prueba")
     now = datetime.datetime.now()
     if now.minute in range(21, 26) and now.hour % 3 == 0 and now.hour in range(8, 20):
         sendTelegram("El bot está trabajando normalmente")
