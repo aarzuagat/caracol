@@ -34,7 +34,7 @@ def start(request):
     if now.hour % 4 == 0 and now.minute in range(15, 19) and now.hour in range(8, 20):
         sendTelegram("Recapitulando todos los productos existentes")
         time.sleep(2)
-        models.Producto.objects.update(last_send=None)
+        models.Producto.objects.all().delete()
         sender()
     return HttpResponse(f'hay {models.Producto.objects.count()} productos')
 
@@ -65,7 +65,7 @@ def search():
         elem.send_keys(Keys.ENTER)
     except:
         pass
-    for i in range(10):
+    for i in range(20):
         try:
             elem = driver.find_element(By.XPATH, "/html/body/app-root/div/app-main/mat-sidenav-container/mat-sidenav"
                                                  "-content/app-product-left-sidebar/div/div[2]/div[2]/div[2]/div["
