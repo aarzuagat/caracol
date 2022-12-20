@@ -166,7 +166,6 @@ def sender():
     five_minutes = timezone.now() - timezone.timedelta(minutes=6)
     non_sended = models.Producto.objects.filter(
         Q(updated_at__isnull=True) | Q(last_send__isnull=True))
-    print(f'hay {len(non_sended)} productos')
     for prod in non_sended:
         status = sendTelegram(f'*{prod.tienda}*: {prod.precio} - {prod.name}')
         print(f"el status es {status}")
@@ -177,4 +176,11 @@ def sender():
             prod.save()
         time.sleep(1)
 
-    models.Producto.objects.filter(updated_at__lt=five_minutes).delete()
+    old = models.Producto.objects.filter(updated_at__lt=five_minutes)
+    sendTelegram("Los siguiente productos se acabaron. Procediendo a eliminarlos: ")
+    for prod in old:
+        status = sendTelegram(f'*{prod.tienda}*: {prod.precio} - {prod.name}')
+        print(f"el status es {status}")
+        if status < 400:
+            prod.delete()
+        time.sleep(1)
