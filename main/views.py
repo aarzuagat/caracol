@@ -24,7 +24,7 @@ from main import models
 def start(request):
     now = datetime.datetime.now()
     if now.minute in range(21, 26) and now.hour % 3 == 0 and now.hour in range(8, 20):
-        sendTelegram("El bot está trabajando normalmente")
+        sendTelegram("El bot está trabajando normalmente v1")
     search()
     try:
         searchMarina()
