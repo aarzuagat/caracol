@@ -177,10 +177,7 @@ def sender():
 
     old = models.Producto.objects.filter(updated_at__lt=five_minutes)
     if old.count() > 0:
-        sendTelegram("Los siguiente productos se acabaron. Procediendo a eliminarlos: ")
+        message = "Los siguiente productos se acabaron. Procediendo a eliminarlos: "
         for prod in old:
-            status = sendTelegram(f'*{prod.tienda}*: {prod.precio} - {prod.name}')
-            print(f"el status es {status}")
-            if status < 400:
-                prod.delete()
-            time.sleep(1)
+            message += f'*{prod.tienda}*: {prod.precio} - {prod.name}'
+        sendTelegram(message)
