@@ -25,17 +25,16 @@ def start(request):
     now = datetime.datetime.now()
     if now.minute == 0 and now.hour % 3 == 0 and now.hour in range(8, 20):
         sendTelegram("El bot está trabajando normalmente v1 ")
+        time.sleep(1)
+    if now.hour == 8 and now.minute == 0:
+        sendTelegram("Recapitulando todos los productos existentes")
+        time.sleep(2)
+        models.Producto.objects.all().delete()
+        sender()
     search()
-    try:
-        searchMarina()
-    except:
-        pass
+    searchMarina()
     sender()
-    # if now.hour == 8 and now.minute in range(0, 4):
-    #     sendTelegram("Recapitulando todos los productos existentes")
-    #     time.sleep(2)
-    #     models.Producto.objects.all().delete()
-    #     sender()
+
     return HttpResponse(f'hay {models.Producto.objects.count()} productos')
 
 
