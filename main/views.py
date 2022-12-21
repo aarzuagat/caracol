@@ -179,5 +179,5 @@ def sender():
     if old.count() > 0:
         message = "Los siguiente productos se acabaron. Procediendo a eliminarlos: "
         for prod in old:
-            message += f'*{prod.tienda}*: {prod.precio} - {prod.name}'
+            message += f'*{prod.tienda}*: {prod.precio} - {prod.name}, '
         sendTelegram(message)
