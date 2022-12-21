@@ -162,7 +162,7 @@ def sendTelegram(message):
 
 
 def sender():
-    five_minutes = timezone.now() - timezone.timedelta(minutes=10)
+    five_minutes = timezone.now() - timezone.timedelta(minutes=20)
     non_sended = models.Producto.objects.filter(
         Q(updated_at__isnull=True) | Q(last_send__isnull=True))
     for prod in non_sended:
