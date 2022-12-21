@@ -31,7 +31,7 @@ def start(request):
     except:
         pass
     sender()
-    if now.hour % 4 == 0 and now.minute in range(15, 19) and now.hour in range(8, 20):
+    if now.hour == 12 and now.minute in range(15, 17):
         sendTelegram("Recapitulando todos los productos existentes")
         time.sleep(2)
         models.Producto.objects.all().delete()
@@ -177,7 +177,8 @@ def sender():
         time.sleep(1)
 
     old = models.Producto.objects.filter(updated_at__lt=five_minutes)
-    sendTelegram("Los siguiente productos se acabaron. Procediendo a eliminarlos: ")
+    if old.count() > 0:
+        sendTelegram("Los siguiente productos se acabaron. Procediendo a eliminarlos: ")
     for prod in old:
         status = sendTelegram(f'*{prod.tienda}*: {prod.precio} - {prod.name}')
         print(f"el status es {status}")
