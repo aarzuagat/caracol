@@ -177,7 +177,7 @@ def sender():
 
     old = models.Producto.objects.filter(updated_at__lt=five_minutes)
     if old.count() > 0:
-        message = "Los siguiente productos se acabaron. Procediendo a eliminarlos: "
+        message = "Los siguiente productos se agotaron. Procediendo a eliminarlos: "
         for prod in old:
             message += f'*{prod.tienda}*: {prod.precio} - {prod.name}, '
             prod.delete()
