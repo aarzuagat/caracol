@@ -117,7 +117,7 @@ def searchMarina():
         elem.send_keys(Keys.ENTER)
     except:
         pass
-    for i in range(2):
+    for i in range(10):
         try:
             elem = driver.find_element(By.XPATH, "/html/body/app-root/div/app-main/mat-sidenav-container/mat-sidenav"
                                                  "-content/app-product-left-sidebar/div/div[2]/div[2]/div[2]/div["
