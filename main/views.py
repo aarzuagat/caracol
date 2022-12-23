@@ -162,7 +162,6 @@ def sendTelegram(message):
 
 
 def sender():
-    five_minutes = timezone.now() - timezone.timedelta(minutes=20)
     non_sended = models.Producto.objects.filter(
         Q(updated_at__isnull=True) | Q(last_send__isnull=True))
     for prod in non_sended:
@@ -175,6 +174,7 @@ def sender():
             prod.save()
         time.sleep(1)
 
+    five_minutes = timezone.now() - timezone.timedelta(minutes=30)
     old = models.Producto.objects.filter(updated_at__lt=five_minutes)
     if old.count() > 0:
         message = "Los siguiente productos se agotaron. Procediendo a eliminarlos: "
