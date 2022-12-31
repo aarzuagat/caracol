@@ -69,7 +69,11 @@ def search():
             pass
         for i in range(1, 20):
             try:
-                searchitems(driver)
+                if 'caracol' in path:
+                    tienda = 'caracol'
+                else:
+                    tienda = 'marina'
+                searchitems(driver, tienda)
                 elem = driver.find_element(By.XPATH,
                                            f'/html/body/app-root/div/app-main/mat-sidenav-container/mat-sidenav'
                                            '-content/app-product-left-sidebar/div/div[2]/div[2]/div[2]/div['
@@ -83,14 +87,13 @@ def search():
     return True
 
 
-def searchitems(driver):
+def searchitems(driver, tienda):
     html = driver.page_source
     soup = BeautifulSoup(html, 'html.parser')
     lista = soup.find_all("app-product")
     for x in lista:
         producto = x.find(attrs={'class': 'card-product'}).find(attrs={'class': 'title'})
         precio = x.find(attrs={'class': 'price-offer'}).text
-        tienda = 'caracol'
         try:
             name = producto.text
         except:
