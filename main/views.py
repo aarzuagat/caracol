@@ -34,46 +34,56 @@ def start(request):
     search()
     searchMarina()
     sender()
+    print(f'hay {models.Producto.objects.count()} productos')
 
     return HttpResponse(f'hay {models.Producto.objects.count()} productos')
 
 
 def search():
-    path = 'https://www.tiendascaracol.com/products/search'
+    paths = ['https://www.tiendascaracol.com/products/search', 'https://tienda.marinasmarlin.com/products/search']
     headers = {
         "User-Agent": "Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) "
                       "Chrome/72.0.3626.119 Safari/537.36 "
     }
-    driver_location = '/usr/bin/chromedriver'
-    binary_location = '/usr/bin/google-chrome'
+    # driver_location = '/usr/bin/chromedriver'
+    # binary_location = '/usr/bin/google-chrome'
 
-    options = webdriver.ChromeOptions()
-    options.binary_location = binary_location
-    options.add_argument('--no-sandbox')
-    options.add_argument('--headless')
+    options = webdriver.FirefoxOptions()
+    # options.binary_location = binary_location
+    # options.add_argument('--no-sandbox')
+    # options.add_argument('--headless')
 
-    driver = webdriver.Chrome(executable_path=driver_location, options=options)
-    driver.get(path)
-    data = '{"municipality": "null", "province": {"id": 3, "name": "La Habana"}, "business": "null"}'
-    driver.execute_script(f"localStorage.setItem('location',{json.dumps(data)})")
-    driver.refresh()
-    time.sleep(5)
+    driver = webdriver.Firefox()
+    # driver = webdriver.Chrome(executable_path=driver_location, options=options)
+    for path in paths:
+        driver.get(path)
+        data = '{"municipality": "null", "province": {"id": 3, "name": "La Habana"}, "business": "null"}'
+        driver.execute_script(f"localStorage.setItem('location',{json.dumps(data)})")
+        driver.refresh()
+        time.sleep(5)
 
-    try:
-        elem = driver.find_element(By.XPATH, "/html/body/div[2]/div[2]/footer/button[3]")
-        elem.send_keys(Keys.ENTER)
-    except:
-        pass
-    for i in range(20):
         try:
-            elem = driver.find_element(By.XPATH, "/html/body/app-root/div/app-main/mat-sidenav-container/mat-sidenav"
-                                                 "-content/app-product-left-sidebar/div/div[2]/div[2]/div[2]/div["
-                                                 "2]/button")
+            elem = driver.find_element(By.XPATH, "/html/body/div[2]/div[2]/footer/button[3]")
             elem.send_keys(Keys.ENTER)
-            time.sleep(5)
         except:
             pass
+        for i in range(1, 20):
+            try:
+                searchitems(driver)
+                elem = driver.find_element(By.XPATH,
+                                           f'/html/body/app-root/div/app-main/mat-sidenav-container/mat-sidenav'
+                                           '-content/app-product-left-sidebar/div/div[2]/div[2]/div[2]/div['
+                                           f'2]/guachos-simple-pagination/nav/ul/li[{i + 1}]/a')
+                elem.send_keys(Keys.ENTER)
+            except:
+                pass
 
+    driver.close()
+
+    return True
+
+
+def searchitems(driver):
     html = driver.page_source
     soup = BeautifulSoup(html, 'html.parser')
     lista = soup.find_all("app-product")
@@ -90,63 +100,6 @@ def search():
             if not created:
                 obj.updated_at = timezone.now()
                 obj.save()
-
-    driver.close()
-
-    return True
-
-
-def searchMarina():
-    path = 'https://tienda.marinasmarlin.com/products/search'
-    driver_location = '/usr/bin/chromedriver'
-    binary_location = '/usr/bin/google-chrome'
-    options = webdriver.ChromeOptions()
-    options.binary_location = binary_location
-    options.add_argument('--no-sandbox')
-    options.add_argument('--headless')
-
-    driver = webdriver.Chrome(executable_path=driver_location, options=options)
-    driver.get(path)
-    data = '{"municipality": "null", "province": {"id": 3, "name": "La Habana"}, "business": "null"}'
-    driver.execute_script(f"localStorage.setItem('location',{json.dumps(data)})")
-    driver.refresh()
-    time.sleep(5)
-
-    try:
-        elem = driver.find_element(By.XPATH, "/html/body/div[2]/div[2]/footer/button[3]")
-        elem.send_keys(Keys.ENTER)
-    except:
-        pass
-    for i in range(10):
-        try:
-            elem = driver.find_element(By.XPATH, "/html/body/app-root/div/app-main/mat-sidenav-container/mat-sidenav"
-                                                 "-content/app-product-left-sidebar/div/div[2]/div[2]/div[2]/div["
-                                                 "2]/button")
-            elem.send_keys(Keys.ENTER)
-            time.sleep(5)
-        except:
-            pass
-
-    html = driver.page_source
-    soup = BeautifulSoup(html, 'html.parser')
-    lista = soup.find_all("app-product")
-    for x in lista:
-        producto = x.find(attrs={'class': 'card-product'}).find(attrs={'class': 'title'})
-        precio = x.find(attrs={'class': 'price-offer'}).text
-        tienda = 'Marina'
-        try:
-            name = producto.text
-        except:
-            pass
-        else:
-            obj, created = models.Producto.objects.get_or_create(name=name, precio=precio, tienda=tienda)
-            if not created:
-                obj.updated_at = timezone.now()
-                obj.save()
-
-    driver.close()
-
-    return True
 
 
 def sendTelegram(message):
