@@ -32,7 +32,6 @@ def start(request):
     #     models.Producto.objects.all().delete()
     #     sender()
     search()
-    searchMarina()
     sender()
     print(f'hay {models.Producto.objects.count()} productos')
 
@@ -45,16 +44,17 @@ def search():
         "User-Agent": "Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) "
                       "Chrome/72.0.3626.119 Safari/537.36 "
     }
-    # driver_location = '/usr/bin/chromedriver'
-    # binary_location = '/usr/bin/google-chrome'
+    driver_location = '/usr/bin/chromedriver'
+    binary_location = '/usr/bin/google-chrome'
 
-    options = webdriver.FirefoxOptions()
-    # options.binary_location = binary_location
-    # options.add_argument('--no-sandbox')
-    # options.add_argument('--headless')
+    options = webdriver.ChromeOptions()
+    # options = webdriver.FirefoxOptions()
+    options.binary_location = binary_location
+    options.add_argument('--no-sandbox')
+    options.add_argument('--headless')
 
-    driver = webdriver.Firefox()
-    # driver = webdriver.Chrome(executable_path=driver_location, options=options)
+    # driver = webdriver.Firefox()
+    driver = webdriver.Chrome(executable_path=driver_location, options=options)
     for path in paths:
         driver.get(path)
         data = '{"municipality": "null", "province": {"id": 3, "name": "La Habana"}, "business": "null"}'
@@ -100,6 +100,7 @@ def searchitems(driver):
             if not created:
                 obj.updated_at = timezone.now()
                 obj.save()
+    return True
 
 
 def sendTelegram(message):
