@@ -61,6 +61,10 @@ def search():
         driver.execute_script(f"localStorage.setItem('location',{json.dumps(data)})")
         driver.refresh()
         time.sleep(5)
+        if 'caracol' in path:
+            tienda = 'caracol'
+        else:
+            tienda = 'marina'
 
         try:
             elem = driver.find_element(By.XPATH, "/html/body/div[2]/div[2]/footer/button[3]")
@@ -69,10 +73,6 @@ def search():
             pass
         for i in range(1, 20):
             try:
-                if 'caracol' in path:
-                    tienda = 'caracol'
-                else:
-                    tienda = 'marina'
                 searchitems(driver, tienda)
                 elem = driver.find_element(By.XPATH,
                                            f'/html/body/app-root/div/app-main/mat-sidenav-container/mat-sidenav'
