@@ -32,7 +32,6 @@ def start(request):
     #     models.Producto.objects.all().delete()
     #     sender()
     search()
-    searchMarina()
     sender()
     print(f'hay {models.Producto.objects.count()} productos')
 
@@ -69,7 +68,11 @@ def search():
             pass
         for i in range(1, 20):
             try:
-                searchitems(driver)
+                if 'marina' in path:
+                    tienda = 'marina'
+                else:
+                    tienda = 'caracol'
+                searchitems(driver, tienda)
                 elem = driver.find_element(By.XPATH,
                                            f'/html/body/app-root/div/app-main/mat-sidenav-container/mat-sidenav'
                                            '-content/app-product-left-sidebar/div/div[2]/div[2]/div[2]/div['
@@ -83,14 +86,13 @@ def search():
     return True
 
 
-def searchitems(driver):
+def searchitems(driver, tienda):
     html = driver.page_source
     soup = BeautifulSoup(html, 'html.parser')
     lista = soup.find_all("app-product")
     for x in lista:
         producto = x.find(attrs={'class': 'card-product'}).find(attrs={'class': 'title'})
         precio = x.find(attrs={'class': 'price-offer'}).text
-        tienda = 'caracol'
         try:
             name = producto.text
         except:
@@ -109,9 +111,10 @@ def sendTelegram(message):
         if char in message:
             message = message.replace(char, '')
     url = f'https://api.telegram.org/bot{bot_key}/sendMessage?chat_id={chat}&text={message}&parse_mode=markdown'
-    response = requests.get(url)
-    print(response.text)
-    return response.status_code
+    return 200
+    # response = requests.get(url)
+    # print(response.text)
+    # return response.status_code
 
 
 def sender():
@@ -119,7 +122,7 @@ def sender():
         Q(updated_at__isnull=True) | Q(last_send__isnull=True))
     for prod in non_sended:
         status = sendTelegram(f'*{prod.tienda}*: {prod.precio} - {prod.name}')
-        print(f"el status es {status}")
+        print(f'*{prod.tienda}*: {prod.precio} - {prod.name}')
         if status < 400:
             prod.sended = True
             prod.updated_at = timezone.now()
