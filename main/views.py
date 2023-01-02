@@ -62,7 +62,7 @@ def search():
         driver.refresh()
         time.sleep(5)
         if 'marinasmarlin' in path:
-            tienda = 'marinasmarlin'
+            tienda = 'marina'
         else:
             tienda = 'caracol'
 
