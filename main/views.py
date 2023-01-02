@@ -61,7 +61,7 @@ def search():
         driver.execute_script(f"localStorage.setItem('location',{json.dumps(data)})")
         driver.refresh()
         time.sleep(5)
-        if 'marinasmarlin' in path:
+        if path == 'https://tienda.marinasmarlin.com/products/search':
             tienda = 'marina'
         else:
             tienda = 'caracol'
