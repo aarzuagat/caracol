@@ -31,19 +31,17 @@ def start(request):
     #     time.sleep(2)
     #     models.Producto.objects.all().delete()
     #     sender()
-    search()
+    searchCaracol()
+    searchMarina()
     sender()
     print(f'hay {models.Producto.objects.count()} productos')
 
     return HttpResponse(f'hay {models.Producto.objects.count()} productos')
 
 
-def search():
-    paths = ['https://www.tiendascaracol.com/products/search', 'https://tienda.marinasmarlin.com/products/search']
-    headers = {
-        "User-Agent": "Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) "
-                      "Chrome/72.0.3626.119 Safari/537.36 "
-    }
+def searchCaracol():
+    paths = ['https://www.tiendascaracol.com/products/search']
+
     driver_location = '/usr/bin/chromedriver'
     binary_location = '/usr/bin/google-chrome'
 
@@ -55,16 +53,52 @@ def search():
 
     # driver = webdriver.Firefox()
     driver = webdriver.Chrome(executable_path=driver_location, options=options)
-    for path in paths:
+    for key, path in enumerate(paths):
         driver.get(path)
         data = '{"municipality": "null", "province": {"id": 3, "name": "La Habana"}, "business": "null"}'
         driver.execute_script(f"localStorage.setItem('location',{json.dumps(data)})")
         driver.refresh()
         time.sleep(5)
-        if path == 'https://tienda.marinasmarlin.com/products/search':
-            tienda = 'marina'
-        else:
-            tienda = 'caracol'
+        tienda = 'caracol'
+        try:
+            elem = driver.find_element(By.XPATH, "/html/body/div[2]/div[2]/footer/button[3]")
+            elem.send_keys(Keys.ENTER)
+        except:
+            pass
+        for i in range(1, 20):
+            try:
+                searchitems(driver, tienda)
+                elem = driver.find_element(By.XPATH,
+                                           f'/html/body/app-root/div/app-main/mat-sidenav-container/mat-sidenav'
+                                           '-content/app-product-left-sidebar/div/div[2]/div[2]/div[2]/div['
+                                           f'2]/guachos-simple-pagination/nav/ul/li[{i + 1}]/a')
+                elem.send_keys(Keys.ENTER)
+            except:
+                pass
+
+    driver.close()
+
+    return True
+def searchMarina():
+    paths = ['https://tienda.marinasmarlin.com/products/search']
+    driver_location = '/usr/bin/chromedriver'
+    binary_location = '/usr/bin/google-chrome'
+
+    options = webdriver.ChromeOptions()
+    # options = webdriver.FirefoxOptions()
+    options.binary_location = binary_location
+    options.add_argument('--no-sandbox')
+    options.add_argument('--headless')
+
+    # driver = webdriver.Firefox()
+    driver = webdriver.Chrome(executable_path=driver_location, options=options)
+    for key, path in enumerate(paths):
+        driver.get(path)
+        data = '{"municipality": "null", "province": {"id": 3, "name": "La Habana"}, "business": "null"}'
+        driver.execute_script(f"localStorage.setItem('location',{json.dumps(data)})")
+        driver.refresh()
+        time.sleep(5)
+        tienda = 'marina'
 
         try:
             elem = driver.find_element(By.XPATH, "/html/body/div[2]/div[2]/footer/button[3]")
@@ -129,7 +163,7 @@ def sender():
             prod.updated_at = timezone.now()
             prod.last_send = timezone.now()
             prod.save()
-        time.sleep(1)
+        time.sleep(2)
 
     five_minutes = timezone.now() - timezone.timedelta(minutes=60)
     old = models.Producto.objects.filter(updated_at__lt=five_minutes)
