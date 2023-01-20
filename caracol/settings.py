@@ -77,7 +77,7 @@ DATABASES = {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': 'caracol',
         'USER': 'root',
-        'PASSWORD': 'root',
+        'PASSWORD': '',
     }
 }
 
