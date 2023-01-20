@@ -24,7 +24,7 @@ SECRET_KEY = 'django-insecure-rkgy&c##fwesh0%z&rdk+qdh#efr*%2)zfvvfw2ai6snb85d!u
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['*', '127.0.0.1','caracol.tech']
+ALLOWED_HOSTS = ['*', '127.0.0.1','caracol.tech','213.171.212.3']
 
 # Application definition
 
