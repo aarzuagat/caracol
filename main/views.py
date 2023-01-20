@@ -42,8 +42,8 @@ def start(request):
 def searchCaracol():
     paths = ['https://www.tiendascaracol.com/products/search']
 
-    driver_location = '/usr/bin/chromedriver'
-    binary_location = '/usr/bin/google-chrome-stable'
+    driver_location = '/usr/bin/chromedriver'    # binario de selenium driver
+    binary_location = '/usr/bin/google-chrome-stable'  #url del instalador de chrome
 
     options = webdriver.ChromeOptions()
     # options = webdriver.FirefoxOptions()
