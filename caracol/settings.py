@@ -76,8 +76,8 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': 'caracol',
-        'USER': 'root',
-        'PASSWORD': '',
+        'USER': 'caracol',
+        'PASSWORD': 'caracol',
     }
 }
 
