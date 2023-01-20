@@ -83,7 +83,7 @@ def searchCaracol():
 def searchMarina():
     paths = ['https://tienda.marinasmarlin.com/products/search']
     driver_location = '/usr/bin/chromedriver'
-    binary_location = '/usr/bin/google-chrome'
+    binary_location = '/usr/bin/google-chrome-stable'
 
     options = webdriver.ChromeOptions()
     # options = webdriver.FirefoxOptions()
