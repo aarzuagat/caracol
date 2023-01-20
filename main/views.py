@@ -50,6 +50,7 @@ def searchCaracol():
     options.binary_location = binary_location
     options.add_argument('--no-sandbox')
     options.add_argument('--headless')
+    options.add_argument('--disable-dev-shm-usage')
 
     # driver = webdriver.Firefox()
     driver = webdriver.Chrome(executable_path=driver_location, options=options)
