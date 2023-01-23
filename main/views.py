@@ -50,7 +50,7 @@ def searchCaracol():
     options.binary_location = binary_location
     options.add_argument('--no-sandbox')
     options.add_argument('--headless')
-    options.add_argument("--remote-debugging-port=9222")
+    options.add_argument("--remote-debugging-port=9230")
     options.add_argument("--disable-setuid-sandbox")
     options.add_argument("--disable-dev-shm-usage")
 
@@ -92,7 +92,7 @@ def searchMarina():
     options.binary_location = binary_location
     options.add_argument('--no-sandbox')
     options.add_argument('--headless')
-    options.add_argument("--remote-debugging-port=9222")
+    options.add_argument("--remote-debugging-port=9230")
     options.add_argument("--disable-setuid-sandbox")
     options.add_argument("--disable-dev-shm-usage")
 
@@ -154,7 +154,6 @@ def sendTelegram(message):
             message = message.replace(char, '')
     url = f'https://api.telegram.org/bot{bot_key}/sendMessage?chat_id={chat}&text={message}&parse_mode=markdown'
     response = requests.get(url)
-    print(response.text)
     return response.status_code
 
 
