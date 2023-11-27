@@ -104,16 +104,16 @@ def searchitems(driver, tienda):
                 obj.save()
 
 
-def sendTelegram(message):
-    bot_key = "5826956567:AAH4wO2YWbvg3pbZVQ2PHvksBc38fj81B7E"
-    chat = "-1001802874612"
+def sendTelegram(message, parse_mode='markdown'):
+    bot_key = "1201814283:AAH-yjQapWH60uVogImL4OXj86CKLsneJWc"
+    chat = "-4029790020"
     for char in ['_', '&']:
         if char in message:
             message = message.replace(char, '')
-    url = f'https://api.telegram.org/bot{bot_key}/sendMessage?chat_id={chat}&text={message}&parse_mode=markdown'
-    return 200
-    # response = requests.get(url)
-    # print(response.text)
+    url = f'https://api.telegram.org/bot{bot_key}/sendMessage?chat_id={chat}&text={message}&parse_mode={parse_mode}'
+    response = requests.get(url)
+    print(response.json())
+
     # return response.status_code
 
 
@@ -138,3 +138,60 @@ def sender():
             message += f'*{prod.tienda}*: {prod.precio} - {prod.name}, '
             prod.delete()
         sendTelegram(message)
+
+
+def revolico():
+    path = 'https://www.revolico.com/search?order=relevance&category=vivienda&subcategory=compra-venta&province=la-habana'
+    # driver_location = '/usr/bin/chromedriver'
+    # binary_location = '/usr/bin/google-chrome'
+
+    # options = webdriver.FirefoxOptions()
+    # options.binary_location = binary_location
+    # options.add_argument('--no-sandbox')
+    # options.add_argument('--headless')
+
+    driver = webdriver.Firefox()
+    # driver = webdriver.Chrome(executable_path=driver_location, options=options)
+    driver.get(path)
+    html = driver.page_source
+    soup = BeautifulSoup(html, 'html.parser')
+    lista = soup.find_all(attrs={"data-cy": "adGrid"})
+    for link in lista:
+        link_real = link.find('a')
+        subPage(link_real.get('href'))
+
+    # for i in lista:
+    #     print(i.text)
+    # sendTelegram(i.text)
+    driver.close()
+
+    return True
+
+
+def subPage(path):
+    driver = webdriver.Firefox()
+    path = f'https://www.revolico.com{path}'
+    driver.get(path)
+    html = driver.page_source
+    soup = BeautifulSoup(html, 'html.parser')
+    lista = soup.find_all(attrs={"data-cy": "adDescription"})
+    contacts = soup.find_all(attrs={"class": "bzaqyz"})
+    price = soup.find(attrs={"data-cy": "adPrice"})
+    location = soup.find(attrs={"data-cy": "adLocation"})
+    for item in lista:
+        parrafo = item.find('p')
+        message = f'{path}  \n'
+        if price:
+            message += f'Precio: {price.text}  \n'
+        if location:
+            message += f'Lugar: {location.text}  \n'
+        contacts_text = ''
+        for phone in contacts:
+            contacts_text += phone.get('href')
+        if len(contacts_text) > 0:
+            message += f'Contactos: {contacts_text}  \n'
+        message += f'Anuncio: {parrafo.text}'
+        print(message)
+        sendTelegram(message, 'html')
+    driver.close()
+    return True
